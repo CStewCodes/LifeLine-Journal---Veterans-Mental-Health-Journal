@@ -22,7 +22,7 @@ jobs:
       run: npm ci
       working-directory: ./client
     - name: Build
-      run: cd client && npm run build
+      run: npm run build
       working-directory: ./client
     # - run: npm run test
     # - run: npm run ci #This is for later when we figure out lint and prettier. Using just npm run test for now
