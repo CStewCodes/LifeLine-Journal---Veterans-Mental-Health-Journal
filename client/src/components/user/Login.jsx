@@ -21,7 +21,12 @@ const Login = () => {
   const handleSubmit = (values) => {
     const registrationSuccessful = true;
     Swal.fire("Success", "Welcome Back! :)", "success");
+
+    const encryptedPassword = AES.encrypt(values.password, "secret-key").toString();
+    values.password = encryptedPassword;
+
     console.log(values);
+    localStorage.setItem("login", JSON.stringify(values));
   };
 
   return (

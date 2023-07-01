@@ -5,6 +5,7 @@ import { Container, Row, Col, Card } from "react-bootstrap";
 import Swal from "sweetalert2";
 import "sweetalert2/dist/sweetalert2.min.css";
 import "./register.css";
+import { AES } from "crypto-js";
 
 const Register = () => {
   const initialValues = {
@@ -31,7 +32,15 @@ const Register = () => {
   const handleSubmit = (values) => {
     const registrationSuccessful = true;
     Swal.fire("Success", "Thank You For Registering! :)", "success");
+
+    const encryptedPassword = AES.encrypt(values.password, "secret-key").toString();
+    values.password = encryptedPassword;
+    const encryptedPasswordConfirm = AES.encrypt(values.passwordConfirm, "secret-key").toString();
+    values.passwordConfirm = encryptedPasswordConfirm;
+
     console.log(values);
+
+    localStorage.setItem("register", JSON.stringify(values));
   };
 
   return (
