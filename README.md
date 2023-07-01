@@ -4,6 +4,13 @@
 # Development:
 ## FrontEnd -
 To get the development version of the website built, run the following commands in the terminal:
-    - cd client
-    - npm i
-    - npm run dev
+
+After git cloning the repo, from the cloned directory run the following commands.
+
+```sh
+
+cd client
+npm i
+npm run dev
+
+```
