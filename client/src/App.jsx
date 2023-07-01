@@ -6,8 +6,6 @@ import "./components/user/register.css";
 function App() {
   return (
     <>
-      <div> Hello World!</div>
-      <div> test </div>
       <div className="register-container">
         <Register />
       </div>
