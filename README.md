@@ -1,2 +1,9 @@
 # Fall-In----AI-Powered-VA-Chatbot
-I've made my changes with the png
+
+
+# Development:
+## FrontEnd -
+To get the development version of the website built, run the following commands in the terminal:
+    - cd client
+    - npm i
+    - npm run dev
