@@ -18,9 +18,8 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
-    - run: cd client
-    - run: npm ci
-    - run: npm run build
+    - run: cd ./client; npm ci
+    - run: cd ./client; npm run build
     # - run: npm run test
     # - run: npm run ci #This is for later when we figure out lint and prettier. Using just npm run test for now
     # - run: npm test --prefix=api
