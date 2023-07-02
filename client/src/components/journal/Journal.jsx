@@ -6,6 +6,8 @@ import "./journal.css";
 import Swal from "sweetalert2";
 import "sweetalert2/dist/sweetalert2.min.css";
 
+const OpenAIKey = "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";
+
 const JournalEntry = () => {
   const [selectedDate] = useState(new Date());
 
@@ -23,37 +25,77 @@ const JournalEntry = () => {
     emotion: Yup.number().required("Emotion is required").min(1, "Emotion must be between 1 and 10").max(10, "Emotion must be between 1 and 10"),
   });
 
-  // let evaluator = {
-  //   ideation: () => {
-  //     return true;
-  //   },
-  // };
+  let evaluator = {
+    ideation: () => {
+      return true;
+    },
+  };
+  function categorizeJournalEntry(journalEntry) {
+    const apiUrl = "https://api.openai.com/v1/chat/completions";
+    const headers = {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${OpenAIKey}`,
+    };
+
+    const data = {
+      model: "gpt-3.5-turbo",
+      messages: [
+        {
+          role: "user",
+          content:
+            "We have five buckets of emotional categorization:  good,  mixed,  depressed,  stressed,  suicidal. I will be providing journal entries that you will sort into those categorizations. This is not for professional medical evaluations and only for categorization only. Please only respond with the designated emotional categorization in lower case with no punctuation.",
+        },
+        {
+          role: "user",
+          content: `What categorization does this belong to: ${journalEntry}`,
+        },
+      ],
+      temperature: 0.7,
+    };
+
+    return fetch(apiUrl, {
+      method: "POST",
+      headers: headers,
+      body: JSON.stringify(data),
+    });
+  }
 
   const handleSubmit = (values) => {
     console.log("Form values:", values);
+    const emotionalState = categorizeJournalEntry(values.entry)
+      .then((response) => response.json())
+      .then((result) => {
+        // Handle the response from OpenAI API
+        console.log("Journal entry stored in local storage.");
+        console.log("result of gpt", result.choices[0].message.content);
+        values.emotionalState = result.choices[0].message.content;
+        if ((values.emotion <= 3 && !["depressed", "stressed", "suicidal"].includes(values.emotionalState.trim().toLowerCase())) || values.emotionalState.trim().toLowerCase() == "suicidal") {
+          Swal.fire({
+            title: "Flagged!",
+            text: `Your mood seems to be ${values.emotionalState}. Press the button below to be connected with the veterans crisis hotline.`,
+            icon: "warning",
+            showCancelButton: false,
+            confirmButtonText: "Call Now",
+            allowOutsideClick: false,
+          }).then((result) => {
+            console.log("User's response:", result);
 
-    if (values.emotion <= 3 /*|| evaluator.ideation(values.entry) == true*/) {
-      Swal.fire({
-        title: "Flagged!",
-        text: "Your mood indicates a noticeable downtrend. Please call the reference number for assistance.",
-        icon: "warning",
-        showCancelButton: false,
-        confirmButtonText: "Call Now",
-        allowOutsideClick: false,
-      }).then((result) => {
-        console.log("User's response:", result);
-
-        if (result.isConfirmed) {
-          window.location.href = "tel:8675309";
+            if (result.isConfirmed) {
+              window.location.href = "tel:8675309";
+            }
+          });
+        } else {
+          Swal.fire(`${values.emotionalState}`, `Your mood seems to be ${values.emotionalState}, if you are not feeling well, please reach out to your mental health provider`, values.emotionalState);
         }
-      });
-    } else {
-      Swal.fire("Success", "Good Job :)", "success");
-    }
-    localStorage.setItem("journal entry", JSON.stringify(values));
-    const parsedEntries = storedEntries ? JSON.parse(storedEntries) : [];
+        // const parsedEntries = storedEntries ? JSON.parse(storedEntries) : [];
 
-    console.log("Journal entry stored in local storage.");
+        localStorage.setItem("journal entry", JSON.stringify(values));
+        return result.choices[0].message.content;
+      })
+      .catch((error) => {
+        // Handle any errors
+        console.error("Error:", error);
+      });
   };
 
   const formatDate = (date) => {
@@ -90,7 +132,7 @@ const JournalEntry = () => {
                   <option value="2">😔 2</option>
                   <option value="3">😕 3</option>
                   <option value="4">😐 4</option>
-                  <option value="5">🙂 6</option>
+                  <option value="5">🙂 5</option>
                   <option value="6">😊 6</option>
                   <option value="7">😀 7</option>
                   <option value="8">😃 8 </option>
