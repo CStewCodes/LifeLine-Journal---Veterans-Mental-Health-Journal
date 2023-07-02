@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { Container, Row, Col, Card } from "react-bootstrap";
@@ -8,6 +8,15 @@ import "./register.css";
 import { AES } from "crypto-js";
 
 const Register = () => {
+  const [registeredUser, setRegisteredUser] = useState(null);
+
+  useEffect(() => {
+    const existingUser = localStorage.getItem("register");
+    if (existingUser) {
+      setRegisteredUser(JSON.parse(existingUser));
+    }
+  }, []);
+
   const initialValues = {
     firstName: "",
     lastName: "",
@@ -30,17 +39,21 @@ const Register = () => {
   });
 
   const handleSubmit = (values) => {
-    const registrationSuccessful = true;
-    Swal.fire("Success", "Thank You For Registering! :)", "success");
-
     const encryptedPassword = AES.encrypt(values.password, values.password).toString();
     values.password = encryptedPassword;
     const encryptedPasswordConfirm = AES.encrypt(values.passwordConfirm, values.passwordConfirm).toString();
     values.passwordConfirm = encryptedPasswordConfirm;
 
-    console.log(values);
+    if (registeredUser) {
+      Swal.fire("Error", "You are already registered!", "error");
+    } else {
+      console.log(values);
 
-    localStorage.setItem("register", JSON.stringify(values));
+      localStorage.setItem("register", JSON.stringify(values));
+      setRegisteredUser(values);
+
+      Swal.fire("Success", "Thank You For Registering! :)", "success");
+    }
   };
 
   return (
