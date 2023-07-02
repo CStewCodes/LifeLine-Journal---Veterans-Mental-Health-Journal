@@ -33,9 +33,9 @@ const Register = () => {
     const registrationSuccessful = true;
     Swal.fire("Success", "Thank You For Registering! :)", "success");
 
-    const encryptedPassword = AES.encrypt(values.password, "secret-key").toString();
+    const encryptedPassword = AES.encrypt(values.password, values.password).toString();
     values.password = encryptedPassword;
-    const encryptedPasswordConfirm = AES.encrypt(values.passwordConfirm, "secret-key").toString();
+    const encryptedPasswordConfirm = AES.encrypt(values.passwordConfirm, values.passwordConfirm).toString();
     values.passwordConfirm = encryptedPasswordConfirm;
 
     console.log(values);

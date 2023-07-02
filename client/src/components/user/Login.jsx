@@ -22,7 +22,7 @@ const Login = () => {
     const registrationSuccessful = true;
     Swal.fire("Success", "Welcome Back! :)", "success");
 
-    const encryptedPassword = AES.encrypt(values.password, "secret-key").toString();
+    const encryptedPassword = AES.encrypt(values.password, values.password).toString();
     values.password = encryptedPassword;
 
     console.log(values);
