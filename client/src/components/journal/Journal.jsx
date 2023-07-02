@@ -32,7 +32,7 @@ const JournalEntry = () => {
     const apiUrl = "https://api.openai.com/v1/chat/completions";
     const headers = {
       "Content-Type": "application/json",
-      Authorization: "Bearer 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",
+      Authorization: "Bearer key",
     };
 
     const data = {
