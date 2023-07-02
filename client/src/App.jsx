@@ -3,6 +3,7 @@ import Login from "./components/user/Login";
 import Register from "./components/user/Register";
 import "./components/user/register.css";
 import Journal from "./components/journal/Journal";
+import JournalLog from "./components/journal/journalLog";
 
 function App() {
   return (
@@ -12,6 +13,7 @@ function App() {
       </div>
       <Login />
       <Journal />
+      <JournalLog />
     </>
   );
 }

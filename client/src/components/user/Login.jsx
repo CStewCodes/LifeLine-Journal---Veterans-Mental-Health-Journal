@@ -3,6 +3,7 @@ import * as Yup from "yup";
 import "./login.css";
 import Swal from "sweetalert2";
 import "sweetalert2/dist/sweetalert2.min.css";
+import { AES, enc } from "crypto-js";
 
 const Login = () => {
   const initialValues = {
@@ -19,14 +20,23 @@ const Login = () => {
   });
 
   const handleSubmit = (values) => {
-    const registrationSuccessful = true;
-    Swal.fire("Success", "Welcome Back! :)", "success");
+    const storedUser = localStorage.getItem("register");
 
-    const encryptedPassword = AES.encrypt(values.password, values.password).toString();
-    values.password = encryptedPassword;
+    console.log(storedUser);
+    if (storedUser) {
+      const registeredUser = JSON.parse(storedUser);
+      const decryptedPassword = AES.decrypt(registeredUser.password, values.password).toString(enc.Utf8);
+      console.log("v pass", values.password);
+      console.log("decrypt", decryptedPassword);
+      console.log("password", values.password);
 
-    console.log(values);
-    localStorage.setItem("login", JSON.stringify(values));
+      if (decryptedPassword == values.password) {
+        Swal.fire("Success", "Welcome Back! :)", "success");
+        localStorage.setItem("login", JSON.stringify(values));
+      } else {
+        Swal.fire("Error", "Invalid email or password", "error");
+      }
+    }
   };
 
   return (

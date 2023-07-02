@@ -23,10 +23,16 @@ const JournalEntry = () => {
     emotion: Yup.number().required("Emotion is required").min(1, "Emotion must be between 1 and 10").max(10, "Emotion must be between 1 and 10"),
   });
 
+  // let evaluator = {
+  //   ideation: () => {
+  //     return true;
+  //   },
+  // };
+
   const handleSubmit = (values) => {
     console.log("Form values:", values);
 
-    if (values.emotion <= 3) {
+    if (values.emotion <= 3 /*|| evaluator.ideation(values.entry) == true*/) {
       Swal.fire({
         title: "Flagged!",
         text: "Your mood indicates a noticeable downtrend. Please call the reference number for assistance.",
@@ -45,6 +51,7 @@ const JournalEntry = () => {
       Swal.fire("Success", "Good Job :)", "success");
     }
     localStorage.setItem("journal entry", JSON.stringify(values));
+    const parsedEntries = storedEntries ? JSON.parse(storedEntries) : [];
 
     console.log("Journal entry stored in local storage.");
   };
