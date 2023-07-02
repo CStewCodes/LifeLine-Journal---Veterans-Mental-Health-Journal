@@ -5,8 +5,8 @@ import { Container, Row, Col, Button } from "react-bootstrap";
 import "./journal.css";
 import Swal from "sweetalert2";
 import "sweetalert2/dist/sweetalert2.min.css";
-import dotenv from "dotenv";
-dotenv.config();
+
+const OpenAIKey = "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";
 
 const JournalEntry = () => {
   const [selectedDate] = useState(new Date());
@@ -34,7 +34,7 @@ const JournalEntry = () => {
     const apiUrl = "https://api.openai.com/v1/chat/completions";
     const headers = {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${process.env.OpenAIKey}`,
+      Authorization: `Bearer ${OpenAIKey}`,
     };
 
     const data = {
